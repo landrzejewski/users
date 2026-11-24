@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -53,11 +54,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, GenericAuthenticationFilter  genericAuthenticationFilter) throws Exception {
         return http
-                .addFilterBefore(new WorkHoursFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(genericAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                //.addFilterBefore(new WorkHoursFilter(), UsernamePasswordAuthenticationFilter.class)
+                //.addFilterBefore(genericAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(withDefaults())
-                .formLogin(withDefaults())
+                .oauth2ResourceServer(config -> config.jwt(withDefaults()))
+                //.httpBasic(withDefaults())
+                //.formLogin(withDefaults())
                 .authorizeHttpRequests(config -> config
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/users").hasAnyRole("USER", "ADMIN")
@@ -70,6 +72,13 @@ public class SecurityConfig {
     @Bean
     public GenericAuthenticationFilter genericAuthenticationFilter(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return new GenericAuthenticationFilter(authenticationConfiguration, "API_KEY", ApiKeyAuthentication::new);
+    }
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        var jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakAuthoritiesConverter());
+        return jwtAuthenticationConverter;
     }
 
 
