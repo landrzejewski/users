@@ -1,0 +1,12 @@
+GET http://localhost:8080/users
+Authorization: Basic dXNlcjoxMjM=
+
+
+###
+GET http://localhost:8080/admins
+#Authorization: Basic YWRtaW46MTIz
+Authorization: Basic dXNlcjoxMjM=
+
+###
+GET http://localhost:8080/me
+Authorization: Basic YWRtaW46MTIz
