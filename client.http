@@ -1,11 +1,11 @@
 GET http://localhost:8080/users
-Authorization: Basic dXNlcjoxMjM=
-
+#Authorization: Basic dXNlcjoxMjM=
+Authorization: API_KEY 0001
 
 ###
 GET http://localhost:8080/admins
-#Authorization: Basic YWRtaW46MTIz
-Authorization: Basic dXNlcjoxMjM=
+Authorization: Basic YWRtaW46MTIz
+#Authorization: Basic dXNlcjoxMjM=
 
 ###
 GET http://localhost:8080/me
