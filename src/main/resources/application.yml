@@ -9,6 +9,9 @@ spring:
           keycloak:
             issuer-uri: http://localhost:8100/realms/training
         registration:
+          github:
+            client-id: _
+            client-secret: _
           keycloak:
             client-id: training-client
             scope:

@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -68,6 +69,11 @@ public class SecurityConfig {
                         .requestMatchers("/admins").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+                .logout(config -> config
+                        .logoutSuccessUrl("/index.html")
+                        .invalidateHttpSession(true)
+                        .addLogoutHandler(new KeycloakLogoutHandler(new RestTemplate()))
+                )
                 .build();
     }
 
@@ -86,7 +92,7 @@ public class SecurityConfig {
 
     // Client scopes -> Client scope details (roles) -> Mapper details -> Add to userinfo enabled (Keycloak Admin console)
     private void userInfoCustomizer(OAuth2LoginConfigurer<HttpSecurity>.UserInfoEndpointConfig userInfoEndpointConfig) {
-        userInfoEndpointConfig.userAuthoritiesMapper(new KeycloakGrantedAuthoritiesMapper());
+        userInfoEndpointConfig.userAuthoritiesMapper(new GenericGrantedAuthoritiesMapper());
     }
 
 
